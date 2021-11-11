@@ -81,7 +81,7 @@ engine:
     include: ["config/workload-with-tekton.yaml"]
     chain:
     - type: RewritePath
-      rewriteTo: "workload.yaml"
+      rewriteTo: "'config/workload.yaml'"
     - type: ReplaceText
       substitutions:
       - text: tanzu-java-web-app
@@ -106,7 +106,7 @@ engine:
     include: ["config/workload-without-tekton.yaml"]
     chain:
     - type: RewritePath
-      rewriteTo: "workload.yaml"
+      rewriteTo: "'config/workload.yaml'"
     - type: ReplaceText
       substitutions:
       - text: tanzu-java-web-app
