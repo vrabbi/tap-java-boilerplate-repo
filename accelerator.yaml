@@ -14,10 +14,15 @@ accelerator:
     label: Prefix for the container image repository
     defaultValue: ghcr.io/vrabbi
     required: true
-  - name: githubRepoURL
+  - name: gitFQDN
+    inputType: text
+    label: Github / Gitlab / Azure DevOps FQDN
+    defaultValue: github.com
+    required: true
+  - name: gitUser
     inputType: text
     label: Github URL for your new project
-    defaultValue: https://github.com/vrabbi/#artifactId
+    defaultValue: vrabbi
     required: true
   - name: teamName
     inputType: text
@@ -41,8 +46,12 @@ engine:
         with: "#repositoryPrefix"
     - type: ReplaceText
       substitutions:
-      - text: "https://github.com/sample-accelerators/tap-java-boilerplate"
-        with: "#githubRepoURL"
+      - text: "github.com"
+        with: "#gitFQDN"
+    - type: ReplaceText
+      substitutions:
+      - text: "sample-accelerators"
+        with: "#gitUser"
   - include: [ "README.md" ]
     chain:
     - type: ReplaceText
