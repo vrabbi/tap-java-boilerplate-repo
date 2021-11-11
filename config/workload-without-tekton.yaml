@@ -8,7 +8,7 @@ metadata:
 spec:
   params:
     - name: run-image
-      value: harbor.terasky.demo/tap-apps/tanzu-java-web-app
+      value: your-registry.io/project/tanzu-java-web-app
   source:
     git:
       url: https://github.com/sample-accelerators/tanzu-java-web-app
