@@ -48,8 +48,10 @@ accelerator:
     label: Enable Tekton Pipeline for testing via TAP Supply Chain
     display: true
     dataType: boolean
-    defaultValue: true
+    defaultValue: false
   - name: pipelineName
+    dependsOn:
+      name: enableTekton
     inputType: select
     label: The Tekton Pipeline used for this Application
     defaultValue: developer-defined-tekton-pipeline
@@ -99,7 +101,7 @@ engine:
     - type: ReplaceText
       substitutions:
       - text: "developer-defined-tekton-pipeline"
-        with: "pipelineName"
+        with: "#pipelineName"
   - condition: "#enableTekton == false"
     include: ["config/workload-without-tekton.yaml"]
     chain:
