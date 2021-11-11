@@ -24,18 +24,87 @@ accelerator:
     label: Github URL for your new project
     defaultValue: vrabbi
     required: true
+  - name: tapGuiCondition
+    label: Enable TAP GUI Integration
+    inputType: toggle
+    display: true
+    dataType: boolean
+    defaultValue: false
   - name: teamName
-    inputType: text
+    inputType: select
     label: The Team name in TAP GUI (Backstage) that will manage this service
     defaultValue: default-team
-    required: true
+    choices:
+      - text: Team A
+        value: team-a
+      - text: Team B
+        value: team-b
+      - text: Default Team
+        value: default-team
+    dependsOn:
+      name: tapGuiCondition
+  - name: enableTekton 
+    inputType: toggle
+    label: Enable Tekton Pipeline for testing via TAP Supply Chain
+    display: true
+    dataType: boolean
+    defaultValue: true
+  - name: pipelineName
+    inputType: select
+    label: The Tekton Pipeline used for this Application
+    defaultValue: developer-defined-tekton-pipeline
+    choices:
+      - text: developer-defined-tekton-pipeline
+        value: developer-defined-tekton-pipeline
+      - text: sample-pipeline
+        value: sample-pipeline
+      - text: security-pipeline
+        value: security-pipeline
 
 engine:
   merge:
   - include: [ "**/*" ]
     exclude: [ "config/*.yaml", "Tiltfile", "README.md", "catalog-info.yaml" ]
-  - include: [ "config/*.yaml", "Tiltfile" ]
+  - include: [ "Tiltfile" ]
     chain:
+    - type: ReplaceText
+      substitutions:
+      - text: tanzu-java-web-app
+        with: "#artifactId"
+    - type: ReplaceText
+      substitutions:
+      - text: your-registry.io/project
+        with: "#repositoryPrefix"
+  - condition: "#enableTekton"
+    include: ["config/workload-with-tekton.yaml"]
+    chain:
+    - type: RewritePath
+      rewriteTo: "config/workload.yaml"
+    - type: ReplaceText
+      substitutions:
+      - text: tanzu-java-web-app
+        with: "#artifactId"
+    - type: ReplaceText
+      substitutions:
+      - text: your-registry.io/project
+        with: "#repositoryPrefix"
+    - type: ReplaceText
+      substitutions:
+      - text: "github.com"
+        with: "#gitFQDN"
+    - type: ReplaceText
+      substitutions:
+      - text: "sample-accelerators"
+        with: "#gitUser"
+    - type: ReplaceText
+      substitutions:
+      - text: "developer-defined-tekton-pipeline"
+        with: "pipelineName"
+  - condition: "#enableTekton == false"
+    include: ["config/workload-without-tekton.yaml"]
+    chain:
+    - type: RewritePath
+      rewriteTo: "config/workload.yaml"
     - type: ReplaceText
       substitutions:
       - text: tanzu-java-web-app
