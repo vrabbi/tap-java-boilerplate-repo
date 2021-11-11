@@ -1,0 +1,61 @@
+accelerator:
+  displayName: TAP Enabled Sping Boot Web App
+  description: A Boilerplate Spring Boot repo to be used with Tanzu Application Platform
+  iconUrl: https://blogs.vmware.com/cloudprovider/files/2021/09/logo-vmware-tanzu-square-Header.png
+  tags:
+  - java
+  - spring
+  - web
+  - tanzu
+
+  options:
+  - name: repositoryPrefix
+    inputType: text
+    label: Prefix for the container image repository
+    defaultValue: ghcr.io/vrabbi
+    required: true
+  - name: githubRepoURL
+    inputType: text
+    label: Github URL for your new project
+    defaultValue: https://github.com/vrabbi/#artifactId
+    required: true
+  - name: teamName
+    inputType: text
+    label: The Team name in TAP GUI (Backstage) that will manage this service
+    defaultValue: default-team
+    required: true
+
+engine:
+  merge:
+  - include: [ "**/*" ]
+    exclude: [ "config/*.yaml", "Tiltfile", "README.md", "catalog-info.yaml" ]
+  - include: [ "config/*.yaml", "Tiltfile" ]
+    chain:
+    - type: ReplaceText
+      substitutions:
+      - text: tanzu-java-web-app
+        with: "#artifactId"
+    - type: ReplaceText
+      substitutions:
+      - text: your-registry.io/project
+        with: "#repositoryPrefix"
+    - type: ReplaceText
+      substitutions:
+      - text: "https://github.com/sample-accelerators/tanzu-java-web-app"
+        with: "#githubRepoURL"
+  - include: [ "README.md" ]
+    chain:
+    - type: ReplaceText
+      substitutions:
+      - text: tanzu-java-web-app
+        with: "#artifactId"
+  - include: [ "catalog-info.yaml" ]
+    chain:
+    - type: ReplaceText
+      substitutions:
+      - text: tanzu-java-web-app
+        with: "#artifactId"
+      - text: default-team
+        with: "#teamName"
+    - type: RewritePath
+      rewriteTo: "#filename"
