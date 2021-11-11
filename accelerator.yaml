@@ -41,7 +41,7 @@ engine:
         with: "#repositoryPrefix"
     - type: ReplaceText
       substitutions:
-      - text: "https://github.com/sample-accelerators/tanzu-java-web-app"
+      - text: "https://github.com/sample-accelerators/tap-java-boilerplate"
         with: "#githubRepoURL"
   - include: [ "README.md" ]
     chain:
